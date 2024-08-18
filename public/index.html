@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Contact Manager</title>
+  <script src="/javascripts/jquery.js"></script>
+  <script src="/javascripts/handlebars.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="stylesheets/style.css">
+</head>
+<body>
+  <header>
+    <a href="#" id="home">
+      <h1>📇 Contact Manager</h1>
+    </a>
+  </header>
+  <div id="main" class="show">
+    <div id="add_contact">
+      <button>Add New Contact</button>
+    </div>
+    <br>
+    <div id="search">
+      <form>
+        <input type="text" id="search_box" placeholder="Search"></input>
+      </form>
+    </div><br>
+    <div>
+      <strong>Filter by Tags</strong><span id="tag_filter"></span>
+      <!-- Filter Tags -->
+    </div>
+    <div id="contact_section">
+    <!-- Contacts -->
+    </div>
+  </div>
+  <br>
+  <div id="add_contact_section" class="hide">
+    <!-- Add Contact Form -->
+  </div>
+  <div id="edit_contact_section" class="hide">
+    <!-- Edit Contact Form -->
+  </div>
+  <script type="module" src="javascripts/main.js"></script>
+
+</body>
+</html>
+
+<script id="contact_tags" type="text/x-handlebars">
+  {{#each tags}}  
+    <span class="tag">{{this}}</span> 
+  {{/each}}
+</script>
+
+
+<script id="contacts" type="text/x-handlebars">
+  {{#each json}}
+    {{> contact}}
+  {{/each}}
+</script>
+
+<script id="contact" type="text/x-handlebars">
+  <div data-id="{{id}}">
+    <h2>{{full_name}}</h2>
+    <strong>Phone Number:</strong> {{phone_number}}<br>
+    <strong>Email:</strong> {{email}}<br>
+    <br>
+    {{#if tags.length}}
+      {{> contact_tags}}
+    {{else}}
+      <span>No tags</span>
+    {{/if}}
+    <br><br>
+    <button class="edit">Edit</button>
+    <button class="delete">Delete</button>
+  </div>
+</script>
+
+<script id="filter_tag_list" type="text/x-handlebars">
+  {{#each tags}}  
+    <span class="tag">{{this}}</span> 
+  {{/each}}
+</script>
+
+<script id="add_contact_form_template" type="text/x-handlebars">
+  <h2>Add Contact</h2>
+    <form action="/submit_form" method="POST" id="add_contact_form">
+      <label for="fulL_name">Full Name</label><br>
+      <input type="text" id="full_name" name="full_name" pattern ="^[a-zA-Z]+ [a-zA-Z]+" title="First and Last Name Only" placeholder="Full Name" required><br>
+
+      <label for="email">Email</label><br>
+      <input type="email" id="email" name="email" placeholder="fullname@example.com" required><br>
+
+      <label for="phone">Phone Number</label><br>
+      <input type="tel" id="phone_number" name="phone_number" pattern="^[0-9]{11}$" inputmode="numeric" title="11 Characters Numeric Only" placeholder ="12345678910" required><br>
+      <label for="tags">Tags</label><br>
+      <input type="text" id="tags" name="tags" pattern="[a-zA-Z,0-9]*" title="Alphanumeric characters separated by commas (,) no spaces" placeholder="tag1,tag2" optional><br><br>
+      Current Existing Tags: {{#if tags.length}}
+                      {{> contact_tags}}
+                     {{else}}
+                      <span>No tags</span>
+                     {{/if}}
+      <br><br>
+      <input type = "submit" value="Submit">
+    </form>
+</script>
+
+<script id="edit_contact_form_template" type="text/x-handlebars">
+  <h2>Edit Contact</h2>
+    <form action="/submit_form" method="POST" id="edit_contact_form" data-id="{{id}}">
+      <label for="fulL_name">Full Name</label><br>
+      <input type="text" id="full_name" name="full_name" pattern ="^[a-zA-Z]+ [a-zA-Z]+" title="First and Last Name Only" value="{{full_name}}" placeholder="Full Name" required><br>
+
+      <label for="email">Email</label><br>
+      <input type="email" id="email" name="email" value="{{email}}" placeholder="fullname@example.com" required><br>
+
+      <label for="phone">Phone Number</label><br>
+      <input type="tel" id="phone_number" name="phone_number" pattern="^[0-9]{11}$" inputmode="numeric" title="11 Characters Numeric Only" value="{{phone_number}}" placeholder ="12345678910" required><br>
+      <label for="tags">Tags</label><br>
+      <input type="text" id="tags" name="tags" pattern="[a-zA-Z,0-9]*" title="Alphanumeric characters separated by commas (,) no spaces" placeholder="tag1, tag2" value="{{tags}}" optional><br><br>
+      {{full_name}}'s Existing Tags: {{#if tags.length}}
+                      {{> contact_tags}}
+                      {{else}}
+                      <span>No tags</span>
+                      {{/if}}
+      <br><br>
+      <input type = "submit" value="Submit">
+    </form>
+</script>
